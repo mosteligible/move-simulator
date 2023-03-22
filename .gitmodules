@@ -1,0 +1,6 @@
+[submodule "docker-routing-engine"]
+	path = docker-routing-engine
+	url = git@github.com:mosteligible/docker-routing-engine.git
+[submodule "reverse-geocoding"]
+	path = reverse-geocoding
+	url = git@github.com:mosteligible/reverse-geocoding.git
