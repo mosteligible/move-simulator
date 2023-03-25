@@ -1,6 +1,7 @@
 from config import AppConfig, DbConfig
-from flask import Flask
-from flask_login import LoginManager
+from flask import Flask, redirect, render_template, url_for
+from flask_login import LoginManager, current_user, login_required
+from map_routes.views import route_blueprint
 from models import UserModel, db
 from users.views import users_blueprint
 from utils import secret_key
@@ -19,6 +20,7 @@ login_manager.init_app(app)
 
 # Register blueprints
 app.register_blueprint(users_blueprint)
+app.register_blueprint(route_blueprint, url_prefix="/routes")
 
 
 # User loader
@@ -27,9 +29,17 @@ def load_user(id):
     return UserModel.query.get(id)
 
 
+@app.route("/successful_login")
+@login_required
+def success():
+    return f"Successful Login: {current_user.username}"
+
+
 @app.route("/")
 def index():
-    return "<h1>Home Page</h1>"
+    if current_user.is_authenticated:
+        return redirect(url_for("profile_home"))
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

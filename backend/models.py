@@ -8,10 +8,10 @@ db = SQLAlchemy()
 class UserModel(UserMixin, db.Model):
     __tablename__ = "users"
 
-    id = db.Column(db.String(50), primary_key=True)
-    email = db.Column(db.String(80), unique=True)
-    username = db.Column(db.String(100))
-    password = db.Column(db.String())
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(250), unique=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
 
     def __init__(self, id: str, username: str, email: str, password: str) -> None:
         self.id = id

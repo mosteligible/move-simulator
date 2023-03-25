@@ -1,0 +1,92 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Route</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Track your Stationary Strides</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Routes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Profile</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Account
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Settings</a></li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="{{ url_for('users.logout') }}">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="mx-auto col-10 col-md-8 col-lg-6">
+    <form action="", method="POST">
+        <h3>Starting Point</h3>
+		<div class="mb-3">
+			<label for="start_street_address" class="form-label">Street Address</label>
+			<input type="text" name="start_street_address" class="form-control" id="start_street_address" aria-describedby="usernameHelp">
+		  </div>
+		<div class="mb-3">
+		  <label for="start_city_name" class="form-label">City Name</label>
+		  <input type="text" name="start_city_name" class="form-control" id="start_city_name" aria-describedby="citynameHelp">
+		</div>
+		<div class="mb-3">
+		  <label for="start_postal_code" class="form-label">Postal Code (optional)</label>
+		  <input type="text" name="start_postal_code" class="form-control" id="start_postal_code">
+		</div>
+        <div class="mb-3">
+            <label for="start_country_name" class="form-label">Country</label>
+            <input type="text" name="start_country_name" class="form-control" id="start_country_name">
+        </div>
+
+        <h3>Destination</h3>
+		<div class="mb-3">
+			<label for="stop_street_address" class="form-label">Street Address</label>
+			<input type="text" name="stop_street_address" class="form-control" id="stop_street_address" aria-describedby="usernameHelp">
+		  </div>
+        <div class="row">
+		<div class="mb-4">
+		  <label for="stop_city_name" class="form-label">City Name</label>
+		  <input type="text" name="stop_city_name" class="form-control" id="stop_city_name" aria-describedby="citynameHelp">
+		</div>
+        <div class="mb-3">
+            <label for="stop_country_name" class="form-label">Country</label>
+            <input type="text" name="stop_country_name" class="form-control" id="stop_country_name">
+        </div>
+        </div>
+		<div class="mb-3">
+		  <label for="stop_postal_code" class="form-label">Postal Code (optional)</label>
+		  <input type="text" name="stop_postal_code" class="form-control" id="stop_postal_code">
+		</div>
+
+		<button type="submit" class="btn btn-primary">Submit</button>
+		{{ form.csrf_token }}
+	</form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  </body>
+  </script>
+</html>

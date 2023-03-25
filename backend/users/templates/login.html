@@ -9,16 +9,28 @@
   <body>
 	<div class="row">
 	<div class="mx-auto col-10 col-md-8 col-lg-6">
+		<nav class="navbar bg-primary" data-bs-theme="dark">
+			<div class="container-fluid">
+			  <a class="navbar-brand" href="#">Navbar</a>
+			  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			  </button>
+			  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+				  <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a>
+				  <a class="nav-link" href="{{ url_for('users.login') }}">Login</a>
+				  <a class="nav-link" href="{{ url_for('users.register') }}">Register</a>
+				  <a class="nav-link disabled">Profile</a>
+				</div>
+			  </div>
+			</div>
+		</nav>
 
 	<h1>Login</h1>
 	<form action="", method="POST">
 		<div class="mb-3">
 			<label for="username" class="form-label">Username</label>
 			<input type="text" name="username" class="form-control" id="username" aria-describedby="usernameHelp">
-		  </div>
-		<div class="mb-3">
-		  <label for="email" class="form-label">Email address</label>
-		  <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp">
 		</div>
 		<div class="mb-3">
 		  <label for="password" class="form-label">Password</label>
