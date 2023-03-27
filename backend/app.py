@@ -11,8 +11,8 @@ app.secret_key = secret_key()
 login_manager = LoginManager()
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    f"mysql+pymysql://{DbConfig.mysql_username}:{DbConfig.mysql_user_password}"
-    f"@{DbConfig.mysql_db_host}/{DbConfig.mysql_db_name}"
+    f"postgresql+psycopg2://{DbConfig.postgres_username}:{DbConfig.postgres_user_password}"
+    f"@{DbConfig.postgres_db_host}/{DbConfig.postgres_db_name}"
 )
 
 db.init_app(app)
@@ -43,4 +43,4 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

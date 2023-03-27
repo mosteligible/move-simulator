@@ -5,16 +5,27 @@ services:
     build:
       context: ./database
     ports:
-      - '3306:3306'
+      - '5432:5432'
     env_file:
       - db.env
+    environment:
+      - POSTGRES_PASSWORD=root_pass
+      - POSTGRES_USER=jajantaram
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
 
-#  backend:
-#    build:
-#      context: ./backend
-#    ports:
-#      - '5000:5000'
-#    depends_on:
-#      - database
-#    env_file:
-#      - db.env
+  reverse-geocoding:
+    container_name: reverse-geocode
+    image: mediagis/nominatim:4.0
+    restart: always
+    ports:
+        - "8080:8080"
+    env_file:
+        - revgeocode.env
+    volumes:
+        - ./geocode-data/:/revgeocode/data
+        - ./nominatim-data/postgresql:/var/lib/postgresql/12/main
+    shm_size: 1gb

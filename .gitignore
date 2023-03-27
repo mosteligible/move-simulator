@@ -1,6 +1,7 @@
 *.drawio
 *.env
 db.js
+geocode-data
 
 *.pyc
 venv
