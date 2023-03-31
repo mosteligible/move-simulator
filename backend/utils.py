@@ -1,10 +1,11 @@
 import secrets
+import time
 from hashlib import sha256
-from typing import Tuple
+from random import random
 
 import requests
 from config import AppConfig
-from requests.adapters import HTTPAdapter
+from message_queues.pubsub import DataPublisher
 
 
 def secret_key() -> str:

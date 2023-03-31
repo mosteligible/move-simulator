@@ -1,14 +1,15 @@
 import uuid
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import (Blueprint, Response, flash, redirect, render_template,
+                   request, url_for)
 from flask_login import current_user, login_required
-from models import UserModel
+from message_queues.pubsub import DataSubscriber
+from models import UserModel, db
 from utils import get_coordinates_from_address
 
 from .forms import RouteAddForm
 from .models import Route
-from models import db
-
+from .utils import distance_stream
 
 route_blueprint = Blueprint(
     name="map_routes",
@@ -59,7 +60,11 @@ def add_route():
             country_name=stop_country_name,
         )
         if start_geocode_data is False or stop_geocode_data is False:
-            invalid_point = start_street_address if start_geocode_data is False else stop_street_address
+            invalid_point = (
+                start_street_address
+                if start_geocode_data is False
+                else stop_street_address
+            )
             message = f"Invalid address for {invalid_point} point."
             return render_template("route_add.html", form=routeaddform, message=message)
         else:
@@ -77,7 +82,7 @@ def add_route():
                 end_country=stop_country_name,
                 start_position=start_geocode_data,
                 end_position=stop_geocode_data,
-                route_coordinates="[[1,2], [3, 4], [4, 5]]"  # TODO: use routing engine to get path coordinates
+                route_coordinates="[[1,2], [3, 4], [4, 5]]",  # TODO: use routing engine to get path coordinates
             )
             db.session.add(route)
             db.session.commit()
@@ -86,3 +91,16 @@ def add_route():
 
     message = "get_form"
     return render_template("route_add.html", form=routeaddform, message=message)
+
+
+@route_blueprint.route("/stream")
+def stream():
+    subscriber = DataSubscriber(host="localhost")
+    return Response(
+        distance_stream(subscriber=subscriber), mimetype="text/event-stream"
+    )
+
+
+@route_blueprint.route("simulate")
+def simulate():
+    return render_template("route_simluator.html")

@@ -1,6 +1,5 @@
-from models import db
-
 from geoalchemy2 import Geography
+from models import db
 
 
 class MapDisplayName:
@@ -10,7 +9,7 @@ class MapDisplayName:
 
 class Route(db.Model):
     __tablename__ = "routes"
-    
+
     id = db.Column(db.String(50), primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     userid = db.Column(db.String(50), nullable=False)

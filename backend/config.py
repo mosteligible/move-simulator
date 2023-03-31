@@ -1,5 +1,6 @@
 import os
 
+import pika
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,6 +12,18 @@ class ApplicationConfig:
         self.host_ip = os.getenv("HOST", "localhost")
         self.port = os.getenv("PORT", 5000)
         self.reverse_geocoder_endpoint = os.getenv("REVERSE_GEOCODER_ENDPOINT", "")
+
+
+class ConsumerConfig:
+    def __init__(self) -> None:
+        self.broker_host = os.getenv("BROKER_HOST")
+        self.broker_port = os.getenv("BROKER_PORT")
+        self.vhost = os.getenv("BROKER_VHOST")
+        self._username = os.getenv("BROKER_USERNAME")
+        self._password = os.getenv("BROKER_PASSWORD")
+        self.credentials = pika.PlainCredentials(
+            username=self._username, password=self._password
+        )
 
 
 class DatabaseConfig:
@@ -28,3 +41,4 @@ class DatabaseConfig:
 
 AppConfig = ApplicationConfig()
 DbConfig = DatabaseConfig()
+brokerconfig = ConsumerConfig()
