@@ -1,18 +1,21 @@
+from threading import Thread
+
 from config import AppConfig, DbConfig
 from flask import Flask, redirect, render_template, url_for
 from flask_login import LoginManager, current_user, login_required
 from map_routes.views import route_blueprint
+from message_queues.pubsub import DataPublisher
 from models import UserModel, db
 from users.views import users_blueprint
-from utils import secret_key
+from utils import data_publisher, secret_key
 
 app = Flask(AppConfig.app_name)
 app.secret_key = secret_key()
 login_manager = LoginManager()
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    f"mysql+pymysql://{DbConfig.mysql_username}:{DbConfig.mysql_user_password}"
-    f"@{DbConfig.mysql_db_host}/{DbConfig.mysql_db_name}"
+    f"postgresql+psycopg2://{DbConfig.postgres_username}:{DbConfig.postgres_user_password}"
+    f"@{DbConfig.postgres_db_host}/{DbConfig.postgres_db_name}"
 )
 
 db.init_app(app)
@@ -43,4 +46,9 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000, debug=True)
+    publisher = DataPublisher()
+    data_generator_thread = Thread(
+        target=data_publisher, args=(publisher,), daemon=True
+    )
+    data_generator_thread.start()
+    app.run(host="0.0.0.0", port=5000, debug=False)

@@ -56,6 +56,7 @@ def register():
         return "Successful Registration!"
     return render_template("register.html", form=form)
 
+
 @users_blueprint.route("/test", methods=["GET", "POST"])
 def test():
     form = TestForm(request.form)

@@ -2,7 +2,15 @@ Flask==2.2.3
 Flask-Bootstrap==3.3.7.1
 Flask-Login==0.6.2
 flask-sqlalchemy
+flask-wtf
+# to work with geographic data type of postgres
+geoalchemy2
 Jinja2==3.1.2
-pymysql
+pika==1.3.1
+psycopg2-binary[rsa]
 python-dotenv==1.0.0
+pyzmq
+requests
+# required to convert Geography point data from postgres to point coordinates
+shapely
 Werkzeug==2.2.3
