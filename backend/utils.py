@@ -1,3 +1,4 @@
+import json
 import secrets
 import time
 from hashlib import sha256
@@ -35,3 +36,15 @@ def get_coordinates_from_address(
     else:
         return False
     return f"POINT({latitude} {longitude})"
+
+
+def data_publisher(publisher: DataPublisher) -> None:
+    iteration = 1
+    while True:
+        sleep_time = random()
+        if sleep_time > 0.6:
+            sleep_time = 1
+        message = json.dumps({"iteration": iteration})
+        publisher.publish_data(message)
+        iteration += 1
+        time.sleep(sleep_time)

@@ -2,6 +2,7 @@ import os
 
 import pika
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
@@ -42,3 +43,4 @@ class DatabaseConfig:
 AppConfig = ApplicationConfig()
 DbConfig = DatabaseConfig()
 brokerconfig = ConsumerConfig()
+ROOT_DIR = Path(__file__).parent.absolute()

@@ -1,8 +1,11 @@
+import json
 import uuid
 
 from flask import (Blueprint, Response, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
+
+from config import ROOT_DIR
 from message_queues.pubsub import DataSubscriber
 from models import UserModel, db
 from utils import get_coordinates_from_address
@@ -20,7 +23,7 @@ route_blueprint = Blueprint(
 
 
 @route_blueprint.route("/", methods=["GET", "POST"])
-@login_required
+# @login_required
 def routes():
     if not current_user.is_authenticated:
         return redirect(url_for("users.login"))
@@ -29,7 +32,7 @@ def routes():
 
 
 @route_blueprint.route("/add_route", methods=["GET", "POST"])
-@login_required
+# @login_required
 def add_route():
     routeaddform = RouteAddForm(request.form)
     if not current_user.is_authenticated:
@@ -101,6 +104,16 @@ def stream():
     )
 
 
-@route_blueprint.route("simulate")
+@route_blueprint.route("/simulate")
 def simulate():
     return render_template("route_simluator.html")
+
+
+routefile = ROOT_DIR.parent / "venv" / "route.json"
+with open(routefile, "r") as fp:
+    ROUTE = json.load(fp)
+
+
+@route_blueprint.route("/running")
+def running():
+    return render_template("route_runner.html", routejson=ROUTE["info"])
