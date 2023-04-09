@@ -4,7 +4,6 @@ import time
 from hashlib import sha256
 from random import random
 
-from config import AppConfig
 from message_queues.pubsub import DataPublisher
 
 

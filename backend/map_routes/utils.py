@@ -6,9 +6,9 @@
 # publish distance update data to subscriber every 1 second
 
 import re
-import requests
 from typing import List, Tuple
 
+import requests
 from config import AppConfig
 from message_queues.pubsub import DataSubscriber
 
@@ -49,9 +49,7 @@ def get_tuple_from_postgres_point(point: str) -> Tuple[float, float]:
     return (float(point[0]), float(point[1]))
 
 
-def get_route_coordinates(
-    start_coordinate: str, stop_coordinate: str
-) -> List:
+def get_route_coordinates(start_coordinate: str, stop_coordinate: str) -> List:
     """
     start_coordinate: Tuple of float, float
         Has latitude and longitude coordinates as (latitude, longitude)
@@ -65,7 +63,7 @@ def get_route_coordinates(
         "profile": "car",
         "points": [
             [start_coordinate[1], start_coordinate[0]],
-            [stop_coordinate[1], stop_coordinate[0]]
+            [stop_coordinate[1], stop_coordinate[0]],
         ],
         "snap_preventions": ["ferry"],
         "details": ["road_class"],
@@ -81,6 +79,6 @@ def get_route_coordinates(
     if not response.ok:
         return False
     output = response.json()
-    path = output['paths'][0]
-    route_coordinates = path['points']
+    path = output["paths"][0]
+    route_coordinates = path["points"]
     return route_coordinates

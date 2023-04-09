@@ -1,8 +1,7 @@
 import pika
+from config import brokerconfig
 
 from .pubsub import DataPublisher
-
-from config import brokerconfig
 
 
 class Consumer:

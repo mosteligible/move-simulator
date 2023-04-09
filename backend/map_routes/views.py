@@ -1,9 +1,14 @@
-import json
 import uuid
 
-from config import ROOT_DIR
-from flask import (Blueprint, Response, flash, redirect, render_template,
-                   request, url_for)
+from flask import (
+    Blueprint,
+    Response,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required
 from message_queues.pubsub import DataSubscriber
 from models import db
@@ -55,11 +60,13 @@ def add_route():
             street_address=start_street_address,
             city_name=start_city_name,
             country_name=start_country_name,
+            postal_code=start_postal_code,
         )
         stop_geocode_data = get_coordinates_from_address(
             street_address=stop_street_address,
             city_name=stop_city_name,
             country_name=stop_country_name,
+            postal_code=stop_postal_code,
         )
         if start_geocode_data is False or stop_geocode_data is False:
             invalid_point = (
@@ -73,8 +80,10 @@ def add_route():
             start_coordinate=start_geocode_data, stop_coordinate=stop_geocode_data
         )
         if start_to_stop_route_coordinates is False:
-            message = "Error! Either start or stop address is out of scope for routing."\
-                      " Please select one within Ontario!"
+            message = (
+                "Error! Either start or stop address is out of scope for routing."
+                " Please select one within Ontario!"
+            )
             return render_template("route_add.html", form=routeaddform, message=message)
         route = Route(
             id=str(uuid.uuid4()),
@@ -90,7 +99,7 @@ def add_route():
             end_country=stop_country_name,
             start_position=start_geocode_data,
             end_position=stop_geocode_data,
-            route_coordinates=start_to_stop_route_coordinates
+            route_coordinates=start_to_stop_route_coordinates,
         )
         db.session.add(route)
         db.session.commit()
@@ -118,6 +127,7 @@ def simulate():
 
 global i
 i = 0
+
 
 @route_blueprint.route("/running/<route_id>", methods=["GET"])
 @login_required

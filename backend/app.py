@@ -1,8 +1,8 @@
 from threading import Thread
 
 from config import AppConfig, DbConfig
-from flask import Flask, redirect, render_template, url_for
-from flask_login import LoginManager, current_user, login_required
+from flask import Flask, render_template
+from flask_login import LoginManager
 from map_routes.views import route_blueprint
 from message_queues.pubsub import DataPublisher
 from models import UserModel, db
