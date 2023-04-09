@@ -19,7 +19,7 @@
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Routes</a>
+                <a class="nav-link" href="{{ url_for('map_routes.routes') }}">Routes</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Profile</a>
@@ -52,17 +52,21 @@
     <a href="{{ url_for('map_routes.add_route') }}">Add Route</a>
     <div class="row justify-content-center">
 
-      {% for user in user_added_routes %}
+      {% for route in user_added_routes %}
 
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    {{ user.username }}
+                    From <b>{{ route.start_street_address }}</b> to <b>{{ route.end_street_address }}</b>
                 </div>
                 <div class="card-body">
-                <h5 class="card-title">{{ user.email }}</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <button type="submit" class="btn btn-primary", name="button">Submit</button>
+                <h5 class="card-title">Distance covered: {{ route.distance_covered }} km</h5>
+                <p class="card-text">
+                  Route id: {{ route.id }} <br>
+                  Origin: {{ route.start_city }} <br>
+                  Destination: {{ route.end_city }}
+                </p>
+                <a href="{{ url_for('map_routes.running', route_id=route.id) }}">Initiate Simulation</a>
                 </div>
             </div>
         </div>

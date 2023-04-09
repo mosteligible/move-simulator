@@ -1,4 +1,7 @@
 import pika
+
+from .pubsub import DataPublisher
+
 from config import brokerconfig
 
 
@@ -15,6 +18,7 @@ class Consumer:
             )
         )
         self.channel = self.connection.channel()
+        self.publisher = DataPublisher(port=7777)
         self.channel.queue_declare(queue=clientId)
         self.channel.basic_consume(
             queue=self.clientId,
@@ -26,4 +30,5 @@ class Consumer:
 
     def callback(self, ch, method, properties, body: str):
         body = body.decode("utf8")
+        self.publisher.publish_data(data=body)
         ch.basic_ack(delivery_tag=method.delivery_tag)

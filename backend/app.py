@@ -32,16 +32,8 @@ def load_user(id):
     return UserModel.query.get(id)
 
 
-@app.route("/successful_login")
-@login_required
-def success():
-    return f"Successful Login: {current_user.username}"
-
-
 @app.route("/")
 def index():
-    if current_user.is_authenticated:
-        return redirect(url_for("profile_home"))
     return render_template("index.html")
 
 

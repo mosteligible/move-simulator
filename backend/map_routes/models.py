@@ -2,11 +2,6 @@ from geoalchemy2 import Geography
 from models import db
 
 
-class MapDisplayName:
-    def __init__(self, display_name: str) -> None:
-        self.display_name = display_name
-
-
 class Route(db.Model):
     __tablename__ = "routes"
 

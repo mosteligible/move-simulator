@@ -16,7 +16,7 @@ users_blueprint = Blueprint(
 def login():
     form = LoginForm(request.form)
     if current_user.is_authenticated:
-        return redirect(url_for("success"))
+        return redirect(url_for("map_routes.routes"))
     if request.method == "POST" and form.validate():
         username = form.username.data
         password = form.password.data
@@ -26,7 +26,7 @@ def login():
         ):
             login_user(expected_user)
             flash("Login Successful!")
-            return redirect(url_for("success"))
+            return redirect(url_for("map_routes.routes"))
         return "<h1> Some Validation Issues </h1>"
     return render_template("login.html", form=form)
 
@@ -35,7 +35,7 @@ def login():
 def register():
     form = RegisterForm(request.form)
     if current_user.is_authenticated:
-        return redirect(url_for("success"))
+        return redirect(url_for("map_routes.routes"))
     if request.method == "POST" and form.validate():
         username = form.username.data
         password = form.password.data
@@ -45,7 +45,7 @@ def register():
         if user is not None:
             if check_password_hash(user.password, password):
                 login_user(user)
-                return redirect(url_for("success"))
+                return redirect(url_for("map_routes.routes"))
 
         id = str(uuid.uuid4())
         new_user = UserModel(id=id, username=username, email=email, password=password)
@@ -53,7 +53,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return "Successful Registration!"
+        return redirect(url_for("map_routes.routes"))
     return render_template("register.html", form=form)
 
 
