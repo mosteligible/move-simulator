@@ -10,6 +10,7 @@ from typing import List, Tuple
 
 import requests
 from config import AppConfig
+from geographiclib.geodesic import Geodesic
 from message_queues.pubsub import DataSubscriber
 
 
@@ -82,3 +83,19 @@ def get_route_coordinates(start_coordinate: str, stop_coordinate: str) -> List:
     path = output["paths"][0]
     route_coordinates = path["points"]
     return route_coordinates
+
+
+def dist_bearing_between_latlon(
+    coord1: Tuple[float, float], coord2: Tuple[float, float]
+) -> Tuple[float, float]:
+    """
+    Get bearing angle between two lat-lon coordinates:
+
+    :params:
+        coord1: Tuple of floats. Contains two elements in order (latitude, longitude)
+        coord1: Tuple of floats. Contains two elements in order (latitude, longitude)
+    """
+    dist_bearing_angle = Geodesic.WGS84.Inverse(*coord1, *coord2)
+    distance = dist_bearing_angle["s12"]
+    bearing_angle = dist_bearing_angle["azi1"]
+    return distance, bearing_angle
