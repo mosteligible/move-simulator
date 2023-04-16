@@ -37,7 +37,7 @@ def routes():
 
 
 @route_blueprint.route("/add_route", methods=["GET", "POST"])
-# @login_required
+@login_required
 def add_route():
     routeaddform = RouteAddForm(request.form)
     if not current_user.is_authenticated:
@@ -47,7 +47,7 @@ def add_route():
     user_id = cur_usr.id
     message = ""
     if request.method == "POST" and routeaddform.validate():
-        # send request to nominatim app
+        # send request to reverse-geocoder
         start_street_address = routeaddform.start_street_address.data
         start_city_name = routeaddform.start_city_name.data
         start_country_name = routeaddform.start_country_name.data
@@ -77,6 +77,8 @@ def add_route():
             )
             message = f"Invalid address for {invalid_point} point."
             return render_template("route_add.html", form=routeaddform, message=message)
+
+        # Get route coordinates from routing-engine
         start_to_stop_route_coordinates = get_route_coordinates(
             start_coordinate=start_geocode_data, stop_coordinate=stop_geocode_data
         )
