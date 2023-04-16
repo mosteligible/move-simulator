@@ -1,8 +1,8 @@
 from threading import Thread
 
 from config import AppConfig, DbConfig
-from flask import Flask, redirect, render_template, url_for
-from flask_login import LoginManager, current_user, login_required
+from flask import Flask, redirect, url_for
+from flask_login import LoginManager
 from map_routes.views import route_blueprint
 from message_queues.pubsub import DataPublisher
 from models import UserModel, db
@@ -32,17 +32,14 @@ def load_user(id):
     return UserModel.query.get(id)
 
 
-@app.route("/successful_login")
-@login_required
-def success():
-    return f"Successful Login: {current_user.username}"
-
-
 @app.route("/")
 def index():
-    if current_user.is_authenticated:
-        return redirect(url_for("profile_home"))
-    return render_template("index.html")
+    return redirect(url_for("users.login"))
+
+
+@app.route("/status")
+def status():
+    return {"status": 200}
 
 
 if __name__ == "__main__":

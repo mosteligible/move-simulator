@@ -1,7 +1,8 @@
 FROM python:3.10-bullseye
 
-WORKDIR /mnt
+WORKDIR /app
 
+COPY . /app
 COPY requirements.txt /tmp
 
 RUN apt-get update && apt-get -y upgrade && \
@@ -9,4 +10,4 @@ RUN apt-get update && apt-get -y upgrade && \
 
 EXPOSE 5000
 
-CMD [ "python", "/mnt/app.py" ]
+CMD [ "python", "/app/app.py" ]

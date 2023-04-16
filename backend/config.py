@@ -1,8 +1,8 @@
 import os
+from pathlib import Path
 
 import pika
 from dotenv import load_dotenv
-from pathlib import Path
 
 load_dotenv()
 
@@ -13,6 +13,7 @@ class ApplicationConfig:
         self.host_ip = os.getenv("HOST", "localhost")
         self.port = os.getenv("PORT", 5000)
         self.reverse_geocoder_endpoint = os.getenv("REVERSE_GEOCODER_ENDPOINT", "")
+        self.routing_engine_endpoint = os.getenv("ROUTING_ENGINE_ENDPOINT", "")
 
 
 class ConsumerConfig:

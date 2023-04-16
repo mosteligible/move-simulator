@@ -14,9 +14,10 @@ class DataPublisher:
 
 
 class DataSubscriber:
-    def __init__(self, host: str, port: int = 7777) -> None:
+    def __init__(self, user_id: str, host: str, port: int = 7777) -> None:
         self.port = port
         self.host = host
+        self.user_id = user_id
         self.connection_string = f"tcp://{host}:{port}"
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.SUB)
