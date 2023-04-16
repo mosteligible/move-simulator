@@ -48,10 +48,8 @@
       Button to add route.
 
     {% else %}
-
     <a href="{{ url_for('map_routes.add_route') }}">Add Route</a>
     <div class="row justify-content-center">
-
       {% for route in user_added_routes %}
 
         <div class="col-sm-4">
@@ -60,11 +58,12 @@
                     From <b>{{ route.start_street_address }}</b> to <b>{{ route.end_street_address }}</b>
                 </div>
                 <div class="card-body">
-                <h5 class="card-title">Distance covered: {{ route.distance_covered }} km</h5>
+                <h5 class="card-title">Distance covered: {{ '%0.2f' % route.total_distance_covered|float }} km</h5>
                 <p class="card-text">
                   Route id: {{ route.id }} <br>
                   Origin: {{ route.start_city }} <br>
-                  Destination: {{ route.end_city }}
+                  Destination: {{ route.end_city }} <br>
+                  Latest Coordinates: {{ route.last_position }}
                 </p>
                 <a href="{{ url_for('map_routes.running', route_id=route.id) }}">Initiate Simulation</a>
                 </div>
@@ -78,8 +77,6 @@
     {% endif %}
 
     {% endblock %}
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
-  </script>
 </html>

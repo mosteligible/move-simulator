@@ -61,7 +61,9 @@
   </body>
   {% block javascript %}
   <script>
-    var route = {{ routejson }};
+    const route = {{ routejson }};
+    const route_id = "{{ route_data.id }}";
+    var last_position = {{ route_data.last_position_index }};
   </script>
   {% endblock %}
   <script src="{{ url_for('map_routes.static', filename='runner.js') }}"></script>

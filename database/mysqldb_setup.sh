@@ -3,12 +3,12 @@
 export $(cat db.env)
 
 if [[ -z "$PGRES_USERNAME" || \
-      -z "$MYSQL_USER_PASSWORD" || \
-      -z "$MYSQL_DB_NAME" || \
-      -z "$MYSQL_USER_TABLE_NAME" || \
-      -z "$MYSQL_ROUTE_TABLE_NAME" || \
-      -z "$MYSQL_INITDB_ROOT_USERNAME" || \
-      -z "$MYSQL_ROOT_PASSWORD" ]]; then
+      -z "$PGRES_USER_PASSWORD" || \
+      -z "$POSTGRES_DB" || \
+      -z "$PGRES_USER_TABLE_NAME" || \
+      -z "$PGRES_ROUTE_TABLE_NAME" || \
+      -z "$POSTGRES_USER" || \
+      -z "$POSTGRES_PASSWORD" ]]; then
     echo ">> Environment variables
     PGRES_USERNAME
     PGRES_USER_PASSWORD
@@ -33,6 +33,10 @@ GRANT ALL PRIVILEGES ON DATABASE $POSTGRES_DB TO $PGRES_USERNAME;
 
 \c $POSTGRES_DB;
 
+CREATE EXTENSION postgis;
+
+SELECT PostGIS_version();
+
 CREATE TABLE IF NOT EXISTS $PGRES_USER_TABLE_NAME (
     id varchar(50) NOT NULL,
     username varchar(50) NOT NULL UNIQUE,
@@ -45,8 +49,8 @@ CREATE TABLE IF NOT EXISTS $PGRES_ROUTE_TABLE_NAME (
     id varchar(50) NOT NULL,
     username varchar(50) NOT NULL,
     userid varchar(50) NOT NULL,
-    last_position geography NOT NULL,
-    distance_covered int NOT NULL,
+    last_position_index int NOT NULL,
+    total_distance_covered float NOT NULL,
     start_street_address varchar(250) NOT NULL,
     start_city varchar(250) NOT NULL,
     start_country varchar(50) NOT NULL,
@@ -55,7 +59,6 @@ CREATE TABLE IF NOT EXISTS $PGRES_ROUTE_TABLE_NAME (
     end_country varchar(50) NOT NULL,
     start_position geography NOT NULL,
     end_position geography NOT NULL,
-    last_position geography NOT NULL,
     route_coordinates json NOT NULL,
     PRIMARY KEY (id)
 );

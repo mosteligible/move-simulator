@@ -14,6 +14,7 @@ from message_queues.pubsub import DataSubscriber
 from models import db
 
 from .forms import RouteAddForm
+from .map_helpers import Position, RouteHelper
 from .models import Route
 from .utils import distance_stream, get_coordinates_from_address, get_route_coordinates
 
@@ -30,8 +31,8 @@ route_blueprint = Blueprint(
 def routes():
     if not current_user.is_authenticated:
         return redirect(url_for("users.login"))
-    userid = current_user.id
-    routes = Route.query.filter_by(userid=userid).all()
+    user_id = current_user.id
+    routes = Route.query.filter_by(userid=user_id).all()
     return render_template("route.html", user_added_routes=routes)
 
 
@@ -89,8 +90,8 @@ def add_route():
             id=str(uuid.uuid4()),
             username=username,
             userid=user_id,
-            distance_covered=0,
-            last_position=start_geocode_data,
+            total_distance_covered=0,
+            last_position_index=0,
             start_street_address=start_street_address,
             start_city=start_city_name,
             start_country=start_country_name,
@@ -111,36 +112,36 @@ def add_route():
     return render_template("route_add.html", form=routeaddform, message=message)
 
 
-@route_blueprint.route("/stream")
+@route_blueprint.route("/stream/<route_id>")
 @login_required
-def stream():
-    subscriber = DataSubscriber(host="localhost")
+def stream(route_id: str):
+    user_id = current_user.id
+    subscriber = DataSubscriber(user_id=user_id, host="localhost")
+    route = Route.query.filter_by(id=route_id).first()
     return Response(
-        distance_stream(subscriber=subscriber), mimetype="text/event-stream"
+        distance_stream(subscriber=subscriber, route=route),
+        mimetype="text/event-stream",
     )
-
-
-@route_blueprint.route("/simulate")
-def simulate():
-    return render_template("route_simluator.html")
-
-
-global i
-i = 0
 
 
 @route_blueprint.route("/running/<route_id>", methods=["GET"])
 @login_required
-def running(route_id):
-    global i
-    print(f"-- Route ID: {route_id}, i; {i}")
-    i += 1
+def running(route_id: str):
     route_data = Route.query.filter_by(id=route_id).first()
-    print("-- type(route_data.route_coordinates)", type(route_data.route_coordinates))
+    route_proxy = RouteHelper(route=route_data)
+    start_position = Position(
+        street_address=route_proxy.start_street_address,
+        coordinates=route_proxy.start_position,
+    )
+    end_position = Position(
+        street_address=route_proxy.end_street_address,
+        coordinates=route_proxy.end_position,
+    )
     coordinates = route_data.route_coordinates["coordinates"]
-    return render_template("route_runner.html", routejson=coordinates)
-
-
-@route_blueprint.route("/hard")
-def test():
-    return render_template("hardcoded.html")
+    return render_template(
+        "route_runner.html",
+        routejson=coordinates,
+        route_data=route_proxy,
+        start_position=start_position,
+        end_position=end_position,
+    )

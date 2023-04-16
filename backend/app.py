@@ -1,7 +1,7 @@
 from threading import Thread
 
 from config import AppConfig, DbConfig
-from flask import Flask, render_template
+from flask import Flask, redirect, url_for
 from flask_login import LoginManager
 from map_routes.views import route_blueprint
 from message_queues.pubsub import DataPublisher
@@ -34,7 +34,12 @@ def load_user(id):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return redirect(url_for("users.login"))
+
+
+@app.route("/status")
+def status():
+    return {"status": 200}
 
 
 if __name__ == "__main__":
