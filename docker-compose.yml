@@ -45,6 +45,10 @@ services:
       - '5000:5000'
     env_file:
       - simulator.env
+    depends_on:
+      - reverse-geocoding
+      - database
+      - routing-engine
     healthcheck:
       test: curl --fail http://localhost:5000/status || exit 1
       interval: 60s
