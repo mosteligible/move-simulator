@@ -1,9 +1,8 @@
 var index = 0;
 var map = L.map('map');
-console.log(`last_position: ${last_position}`);
-console.log(`last_position_coordinates: ${route[last_position]}`);
-var startLat = route[last_position][1],
-    startLon = route[last_position][0],
+console.log(`last_position: ${latest_position}`);
+var startLat = latest_position[1],
+    startLon = latest_position[0],
     latlon, coordinate;
 var myPosMarker = L.marker([startLat, startLon], title='this').addTo(map);;
 

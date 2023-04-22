@@ -69,10 +69,10 @@ def update_current_stretch(
     overshoot = (
         current_stretch.distance_covered + distance_covered - current_stretch.distance
     )
-    route.last_position_index += 1
     stretch_distances = 0
 
     while stretch_distances - overshoot < 0:
+        route.last_position_index += 1
         current_stretch = CurrentStretch(
             origin=route_coordinates[route.last_position_index],
             destination=route_coordinates[route.last_position_index + 1],

@@ -139,10 +139,8 @@ def running(route_id: str):
         street_address=route_proxy.end_street_address,
         coordinates=route_proxy.end_position,
     )
-    coordinates = route_data.route_coordinates["coordinates"]
     return render_template(
         "route_runner.html",
-        routejson=coordinates,
         route_data=route_proxy,
         start_position=start_position,
         end_position=end_position,
