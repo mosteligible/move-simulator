@@ -32,23 +32,6 @@ def update_distance_covered_in_route(route_proxy: RouteHelper, distance: float) 
 
 
 def update_current_stretch(
-    current_stretch: CurrentStretch, route: RouteHelper, route_coordinates: List
-) -> CurrentStretch:
-    coordinate_index = route.last_position_index
-    while True:
-        if current_stretch.distance_covered >= current_stretch.distance:
-            overshoot = current_stretch.distance_covered - current_stretch.distance
-            coordinate_index += 1
-            current_stretch = CurrentStretch(
-                origin=route_coordinates[coordinate_index],
-                destination=route_coordinates[coordinate_index + 1],
-                distance_covered=overshoot,
-            )
-        else:
-            return current_stretch
-
-
-def update_current_stretch(
     current_stretch: CurrentStretch,
     distance_covered: float,
     route: RouteHelper,
@@ -71,7 +54,7 @@ def update_current_stretch(
     )
     stretch_distances = 0
 
-    while stretch_distances - overshoot < 0:
+    while stretch_distances - overshoot <= 0:
         route.last_position_index += 1
         current_stretch = CurrentStretch(
             origin=route_coordinates[route.last_position_index],
@@ -84,8 +67,11 @@ def update_current_stretch(
 
 def distance_stream(subscriber: DataSubscriber, route: Route):
     """Received data and converts it to coordinate required for simulation"""
+    route_coordinates = route.route_coordinates
+    num_coordinates = len(route_coordinates)
+    if route.last_position_index >= num_coordinates:
+        return "data: path complete\n\n"
     route_proxy = RouteHelper(route=route)
-    route_coordinates = route.route_coordinates["coordinates"]
     start_coordinate = route_coordinates[route_proxy.last_position_index]
     print(f"Route first two: {route_coordinates[:2]}")
     current_stretch = CurrentStretch(
@@ -96,6 +82,8 @@ def distance_stream(subscriber: DataSubscriber, route: Route):
     recent_db_update = time.perf_counter()
     distance_travelled_between_db_updates = 0
     while True:
+        if route_proxy.last_position_index >= num_coordinates:
+            return "data: path complete\n\n"
         distance_data_from_sensor = subscriber.receive_data()
         distance_covered = float(distance_data_from_sensor) * 1000
         current_stretch.distance_covered += distance_covered
@@ -183,10 +171,9 @@ def get_route_coordinates(start_coordinate: str, stop_coordinate: str) -> List:
 
     request_url = f"{AppConfig.routing_engine_endpoint}/route"
     response = requests.post(request_url, json=query_parameters, headers=headers)
-    print("response:", response)
     if not response.ok:
         return False
     output = response.json()
     path = output["paths"][0]
-    route_coordinates = path["points"]
+    route_coordinates = path["points"]["coordinates"]
     return route_coordinates

@@ -64,13 +64,30 @@ class CurrentStretch:
         destination = geod.Direct(*self.origin, self.bearing, self.distance_covered)
         return [destination["lat2"], destination["lon2"]]
 
+    def __eq__(self, other: "CurrentStretch") -> bool:
+        """
+        Two stretches are equal if their origin and destination are same.
+        """
+        origin_equal = all(x == y for x, y in zip(self.origin, other.origin))
+        destination_equal = all(
+            x == y for x, y in zip(self.destination, other.destination)
+        )
+        return origin_equal and destination_equal
+
+    def __repr__(self) -> str:
+        origin = f"POINT({self.origin[1]}, {self.origin[0]})"
+        destination = f"POINT({self.destination[1]}, {self.destination[0]})"
+        return f"{origin} -> {destination}"
+
 
 class RouteHelper:
     def __init__(self, route: Route) -> None:
         self.start_position = self.lat_lon_from_postgis_point(route.start_position)
         self.end_position = self.lat_lon_from_postgis_point(route.end_position)
         self.last_position_index = route.last_position_index
-        self.last_position = route.route_coordinates["coordinates"][self.last_position_index]
+        self.last_position = route.route_coordinates["coordinates"][
+            self.last_position_index
+        ]
         self.id = route.id
         self.start_street_address = route.start_street_address
         self.start_city = route.start_city

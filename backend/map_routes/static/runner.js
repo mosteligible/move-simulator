@@ -3,17 +3,22 @@ var map = L.map('map');
 console.log(`last_position: ${latest_position}`);
 var startLat = latest_position[1],
     startLon = latest_position[0],
-    latlon, coordinate;
+    latlon, sse_update;
 var myPosMarker = L.marker([startLat, startLon], title='this').addTo(map);;
 
-const mapElement = document.getElementById("map");
+const mapElement = document.getElementById('map');
 const serverSentEvent = new EventSource(`/routes/stream/${route_id}`);
 
 serverSentEvent.onmessage = (event) => {
-    coordinate = JSON.parse(event.data);
-    startLat = coordinate[1];
-    startLon = coordinate[0];
-    displayMap();
+    sse_update = JSON.parse(event.data);
+    if (sse_update === 'path complete') {
+        const completion_msg = document.getElementById('completion-msg');
+        completion_msg.innerHTML = 'The route has been completed';
+    } else {
+        startLat = sse_update[1];
+        startLon = sse_update[0];
+        displayMap();
+    }
 };
 
 function displayMap() {

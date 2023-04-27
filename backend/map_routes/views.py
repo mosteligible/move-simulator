@@ -7,6 +7,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    stream_with_context,
     url_for,
 )
 from flask_login import current_user, login_required
@@ -103,6 +104,7 @@ def add_route():
             start_position=start_geocode_data,
             end_position=stop_geocode_data,
             route_coordinates=start_to_stop_route_coordinates,
+            num_route_coordinates=len(start_to_stop_route_coordinates),
         )
         db.session.add(route)
         db.session.commit()
@@ -121,7 +123,7 @@ def stream(route_id: str):
     subscriber = DataSubscriber(user_id=user_id, host="localhost")
     route = Route.query.filter_by(id=route_id).first()
     return Response(
-        distance_stream(subscriber=subscriber, route=route),
+        stream_with_context(distance_stream(subscriber=subscriber, route=route)),
         mimetype="text/event-stream",
     )
 
