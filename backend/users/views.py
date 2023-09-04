@@ -2,10 +2,11 @@ import uuid
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from models import UserModel, db
+from models import db
 from werkzeug.security import check_password_hash
 
 from .forms import LoginForm, RegisterForm, TestForm
+from .models import UserModel
 
 users_blueprint = Blueprint(
     name="users", import_name=__name__, template_folder="templates"

@@ -1,7 +1,4 @@
-import pytest
-
 from typing import Dict
-from unittest.mock import patch
 
 from map_routes import utils
 from map_routes.map_helpers import CurrentStretch

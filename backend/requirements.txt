@@ -6,6 +6,7 @@ flask-wtf
 # to work with geographic data type of postgres
 geoalchemy2
 geographiclib==2.0
+gunicorn
 Jinja2==3.1.2
 pika==1.3.1
 psycopg2-binary[rsa]

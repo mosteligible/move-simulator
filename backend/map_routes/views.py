@@ -30,8 +30,6 @@ route_blueprint = Blueprint(
 @route_blueprint.route("/", methods=["GET", "POST"])
 @login_required
 def routes():
-    if not current_user.is_authenticated:
-        return redirect(url_for("users.login"))
     user_id = current_user.id
     routes = Route.query.filter_by(userid=user_id).all()
     return render_template("route.html", user_added_routes=routes)
@@ -41,8 +39,6 @@ def routes():
 @login_required
 def add_route():
     routeaddform = RouteAddForm(request.form)
-    if not current_user.is_authenticated:
-        return redirect(url_for("users.login"))
     cur_usr = current_user
     username = cur_usr.username
     user_id = cur_usr.id
