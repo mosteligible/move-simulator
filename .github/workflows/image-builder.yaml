@@ -1,0 +1,17 @@
+name: Backend Builder
+
+on:
+  push:
+    branches: ["**"]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Simulator Builder
+        run: make build-simulator
+      - name: Publish Simulator
+        run: |
+          docker tag simulator:latest ${{secrets.DOCKER_USER}}/simulator/service:0.0.0
+          echo ${{secrets.DOCKER_TOKEN}} | docker login -u ${{secrets.DOCKER_USER}} --password-stdin
+          docker push ${{secrets.DOCKER_USER}}/simulator/service:0.0.0

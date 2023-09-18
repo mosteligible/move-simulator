@@ -6,3 +6,6 @@ docker-compose:
 
 pre-commit:
 	pre-commit run --all-files
+
+build-simulator:
+	docker build -t simulator:latest -f ./backend/Dockerfile ./backend
