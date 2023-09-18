@@ -13,6 +13,6 @@ jobs:
         run: docker build -t simulator:latest -f ./backend/Dockerfile ./backend
       - name: Publish Simulator
         run: |
-          docker tag simulator:latest ${{secrets.DOCKER_USER}}/simulator/service:0.0.0
+          docker tag simulator:latest ${{secrets.DOCKER_USER}}/sim-service:0.0.0
           echo ${{secrets.DOCKER_TOKEN}} | docker login -u ${{secrets.DOCKER_USER}} --password-stdin
           docker push ${{secrets.DOCKER_USER}}/sim-service:0.0.0
