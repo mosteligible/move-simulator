@@ -37,6 +37,14 @@ services:
       - '8989:8989'
     command: --url https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf --host 0.0.0.0
 
+  message-broker:
+    build:
+      context: ./rabbitmq
+    container_name: demo-broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   simulator:
     container_name: simulator
     build:

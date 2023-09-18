@@ -10,4 +10,4 @@ RUN apt-get update && apt-get -y upgrade && \
 
 EXPOSE 5000
 
-CMD [ "gunicorn", "--workers=4", "--bind='$(HOST):$(PORT)'", "entrypoint:app" ]
+CMD [ "python", "entrypoint.py" ]

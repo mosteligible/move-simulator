@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS $PGRES_ROUTE_TABLE_NAME (
     start_position geography NOT NULL,
     end_position geography NOT NULL,
     route_coordinates json NOT NULL,
+    num_route_coordinates int,
     PRIMARY KEY (id)
 );
 

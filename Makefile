@@ -1,7 +1,7 @@
 build-routing-engine:
 	cd docker-routing-engine && ./build.sh
 
-docker-compose: build-routing-engine
+docker-compose:
 	docker compose up --build -d
 
 pre-commit:
