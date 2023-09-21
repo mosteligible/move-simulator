@@ -5,6 +5,12 @@ on:
     branches: ["**"]
 
 jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Simulator tester
+        run: make pre-commit
   build:
     runs-on: ubuntu-20.04
     steps:
@@ -12,6 +18,7 @@ jobs:
       - name: Simulator Builder
         run: docker build -t simulator:latest -f ./backend/Dockerfile ./backend
       - name: Publish Simulator
+        if: github.ref == 'refs/heads/master'
         run: |
           docker tag simulator:latest ${{secrets.DOCKER_USER}}/sim-service:0.0.0
           echo ${{secrets.DOCKER_TOKEN}} | docker login -u ${{secrets.DOCKER_USER}} --password-stdin

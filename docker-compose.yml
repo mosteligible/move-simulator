@@ -47,8 +47,7 @@ services:
 
   simulator:
     container_name: simulator
-    build:
-      context: ./backend
+    image: mosteligible/sim-service:0.0.0
     ports:
       - '5000:5000'
     env_file:
