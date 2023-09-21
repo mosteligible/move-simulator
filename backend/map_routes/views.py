@@ -7,6 +7,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     stream_with_context,
     url_for,
 )
@@ -143,3 +144,9 @@ def running(route_id: str):
         start_position=start_position,
         end_position=end_position,
     )
+
+
+@route_blueprint.route("/is_running", methods=["POST"])
+@login_required
+def is_running():
+    data = request.data

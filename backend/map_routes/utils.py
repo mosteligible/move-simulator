@@ -113,6 +113,7 @@ def distance_stream(subscriber: DataSubscriber, route: Route):
             recent_db_update = time.perf_counter()
             distance_travelled_between_db_updates = 0
         yield f"data: {next_coordinate}\n\n"
+        # if no polling from page, exit stream loop
 
 
 def get_coordinates_from_address(

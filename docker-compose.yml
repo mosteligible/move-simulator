@@ -42,8 +42,8 @@ services:
       context: ./rabbitmq
     container_name: demo-broker
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5672:5672"  # rabbitmq port
+      - "15672:15672"  # management plugin port
 
   simulator:
     container_name: simulator

@@ -1,12 +1,15 @@
+import time
 from dataclasses import dataclass
+from threading import Lock
 from typing import List
 
+import constants
 from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import to_shape
 from geographiclib.constants import Constants
 from geographiclib.geodesic import Geodesic
 
-from .models import Route
+from .models import Route, db
 
 
 @dataclass
@@ -104,3 +107,24 @@ class RouteHelper:
         self.start_position = self.lat_lon_from_postgis_point(self.start_position)
         self.end_position = self.lat_lon_from_postgis_point(self.end_position)
         self.last_position = self.lat_lon_from_postgis_point(self.last_position)
+
+
+class PositionUpdater:
+    __lock = Lock()
+
+    def __init__(self, distnace_travelled: float) -> None:
+        self.last_update_at = time.time()
+        self.distance_tracelled = distnace_travelled
+
+    def update_distance_covered(self, route: RouteHelper, distance: float) -> None:
+        with self.__lock:
+            if time.time() - self.last_update_at < constants.DB_UPDATE_INTERVAL:
+                return
+            from app import app
+
+            route: Route = Route.query.filter_by(id=route.id).first()
+            route.total_distance_covered += distance
+            db.session.commit()
+            self.last_update_at = time.time()
+
+        return

@@ -1,5 +1,6 @@
 from threading import Thread
 
+import config
 import utils
 from app import app
 from config import AppConfig
