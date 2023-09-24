@@ -111,20 +111,22 @@ class RouteHelper:
 
 class PositionUpdater:
     __lock = Lock()
+    last_update_at: int
 
-    def __init__(self, distnace_travelled: float) -> None:
+    def __init__(self, distnace_travelled: float = 0.0) -> None:
         self.last_update_at = time.time()
-        self.distance_tracelled = distnace_travelled
+        self.distance_travelled = distnace_travelled
 
-    def update_distance_covered(self, route: RouteHelper, distance: float) -> None:
+    def update_distance_covered(self, route: RouteHelper, distance: float) -> bool:
         with self.__lock:
             if time.time() - self.last_update_at < constants.DB_UPDATE_INTERVAL:
-                return
+                return False
             from app import app
 
-            route: Route = Route.query.filter_by(id=route.id).first()
-            route.total_distance_covered += distance
-            db.session.commit()
+            with app.app_context():
+                route: Route = Route.query.filter_by(id=route.id).first()
+                route.total_distance_covered += distance
+                db.session.commit()
             self.last_update_at = time.time()
 
-        return
+        return True
