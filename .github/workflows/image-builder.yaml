@@ -17,7 +17,7 @@ jobs:
       - name: Pull CI Image
         run: docker pull ${{secrets.DOCKER_USER}}/ci-image
       - name: Simulator tester
-        run: docker run -t -v $(pwd):/tmp ${{secrets.DOCKER_USER}}/ci-image bash -c "pre-commit run --all-files"
+        run: docker run -t -v $(pwd):/tmp ${{secrets.DOCKER_USER}}/ci-image bash -c "pytest"
   build:
     runs-on: ubuntu-20.04
     steps:

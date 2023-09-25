@@ -32,7 +32,7 @@ def config_update_detector() -> None:
     prev_config_file = ""
     while True:
         time.sleep(120)
-        with open(constants.config_file, "r") as fp:
+        with open(constants.CONFIG_FILE_PATH, "r") as fp:
             content = fp.read()
             if content != prev_config_file:
                 update_configs()
