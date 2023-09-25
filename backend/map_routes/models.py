@@ -19,3 +19,4 @@ class Route(db.Model):
     start_position = db.Column(Geography(geometry_type="POINT"), nullable=False)
     end_position = db.Column(Geography(geometry_type="POINT"), nullable=False)
     route_coordinates = db.Column(db.JSON, nullable=False)
+    num_route_coordinates = db.Column(db.Integer, nullable=False)

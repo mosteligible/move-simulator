@@ -2,8 +2,10 @@ import zmq
 
 
 class DataPublisher:
-    def __init__(self, port: int = 7777) -> None:
+    def __init__(self, port: int = 7777, device_id: str = "", user_id: str = "") -> None:
         self.port = port
+        self.device_id = device_id
+        self.user_id = user_id
         self.connection_string = f"tcp://*:{port}"
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.PUB)
@@ -22,7 +24,7 @@ class DataSubscriber:
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.SUB)
         self.socket.connect(self.connection_string)
-        self.socket.subscribe("")
+        self.socket.subscribe(user_id)
 
     def receive_data(self) -> str:
         return self.socket.recv_string()

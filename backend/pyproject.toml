@@ -1,0 +1,6 @@
+[tool.pytest.ini_options]
+minversion = 7.3
+pythonpath = "."
+testpaths = [
+    "tests"
+]

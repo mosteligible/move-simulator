@@ -1,0 +1,31 @@
+name: Backend Builder
+
+on:
+  push:
+    branches: ["**"]
+
+env:
+  DOCKER_USERNAME: ${{secrets.DOCKER_USER}}
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Pull CI Image
+        run: docker pull ${{secrets.DOCKER_USER}}/ci-image
+      - name: Simulator tester
+        working-directory: ./backend
+        run: docker run -t -v $(pwd):/tmp ${{secrets.DOCKER_USER}}/ci-image bash -c "pytest"
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Simulator Builder
+        run: docker build -t simulator:latest -f ./backend/Dockerfile ./backend
+      - name: Publish Simulator
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker tag simulator:latest ${{secrets.DOCKER_USER}}/sim-service:0.0.0
+          echo ${{secrets.DOCKER_TOKEN}} | docker login -u ${{secrets.DOCKER_USER}} --password-stdin
+          docker push ${{secrets.DOCKER_USER}}/sim-service:0.0.0

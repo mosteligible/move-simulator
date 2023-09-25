@@ -7,6 +7,8 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
+    stream_with_context,
     url_for,
 )
 from flask_login import current_user, login_required
@@ -29,8 +31,6 @@ route_blueprint = Blueprint(
 @route_blueprint.route("/", methods=["GET", "POST"])
 @login_required
 def routes():
-    if not current_user.is_authenticated:
-        return redirect(url_for("users.login"))
     user_id = current_user.id
     routes = Route.query.filter_by(userid=user_id).all()
     return render_template("route.html", user_added_routes=routes)
@@ -40,8 +40,6 @@ def routes():
 @login_required
 def add_route():
     routeaddform = RouteAddForm(request.form)
-    if not current_user.is_authenticated:
-        return redirect(url_for("users.login"))
     cur_usr = current_user
     username = cur_usr.username
     user_id = cur_usr.id
@@ -103,6 +101,7 @@ def add_route():
             start_position=start_geocode_data,
             end_position=stop_geocode_data,
             route_coordinates=start_to_stop_route_coordinates,
+            num_route_coordinates=len(start_to_stop_route_coordinates),
         )
         db.session.add(route)
         db.session.commit()
@@ -121,7 +120,7 @@ def stream(route_id: str):
     subscriber = DataSubscriber(user_id=user_id, host="localhost")
     route = Route.query.filter_by(id=route_id).first()
     return Response(
-        distance_stream(subscriber=subscriber, route=route),
+        stream_with_context(distance_stream(subscriber=subscriber, route=route)),
         mimetype="text/event-stream",
     )
 
@@ -139,11 +138,15 @@ def running(route_id: str):
         street_address=route_proxy.end_street_address,
         coordinates=route_proxy.end_position,
     )
-    coordinates = route_data.route_coordinates["coordinates"]
     return render_template(
         "route_runner.html",
-        routejson=coordinates,
         route_data=route_proxy,
         start_position=start_position,
         end_position=end_position,
     )
+
+
+@route_blueprint.route("/is_running", methods=["POST"])
+@login_required
+def is_running():
+    data = request.data

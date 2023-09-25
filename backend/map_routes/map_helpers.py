@@ -1,12 +1,15 @@
+import time
 from dataclasses import dataclass
+from threading import Lock
 from typing import List
 
+import constants
 from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import to_shape
 from geographiclib.constants import Constants
 from geographiclib.geodesic import Geodesic
 
-from .models import Route
+from .models import Route, db
 
 
 @dataclass
@@ -64,12 +67,30 @@ class CurrentStretch:
         destination = geod.Direct(*self.origin, self.bearing, self.distance_covered)
         return [destination["lat2"], destination["lon2"]]
 
+    def __eq__(self, other: "CurrentStretch") -> bool:
+        """
+        Two stretches are equal if their origin and destination are same.
+        """
+        origin_equal = all(x == y for x, y in zip(self.origin, other.origin))
+        destination_equal = all(
+            x == y for x, y in zip(self.destination, other.destination)
+        )
+        return origin_equal and destination_equal
+
+    def __repr__(self) -> str:
+        origin = f"POINT({self.origin[1]}, {self.origin[0]})"
+        destination = f"POINT({self.destination[1]}, {self.destination[0]})"
+        return f"{origin} -> {destination}"
+
 
 class RouteHelper:
     def __init__(self, route: Route) -> None:
         self.start_position = self.lat_lon_from_postgis_point(route.start_position)
         self.end_position = self.lat_lon_from_postgis_point(route.end_position)
         self.last_position_index = route.last_position_index
+        self.last_position = route.route_coordinates["coordinates"][
+            self.last_position_index
+        ]
         self.id = route.id
         self.start_street_address = route.start_street_address
         self.start_city = route.start_city
@@ -86,3 +107,26 @@ class RouteHelper:
         self.start_position = self.lat_lon_from_postgis_point(self.start_position)
         self.end_position = self.lat_lon_from_postgis_point(self.end_position)
         self.last_position = self.lat_lon_from_postgis_point(self.last_position)
+
+
+class PositionUpdater:
+    __lock = Lock()
+    last_update_at: int
+
+    def __init__(self, distnace_travelled: float = 0.0) -> None:
+        self.last_update_at = time.time()
+        self.distance_travelled = distnace_travelled
+
+    def update_distance_covered(self, route: RouteHelper, distance: float) -> bool:
+        with self.__lock:
+            if time.time() - self.last_update_at < constants.DB_UPDATE_INTERVAL:
+                return False
+            from app import app
+
+            with app.app_context():
+                route: Route = Route.query.filter_by(id=route.id).first()
+                route.total_distance_covered += distance
+                db.session.commit()
+            self.last_update_at = time.time()
+
+        return True

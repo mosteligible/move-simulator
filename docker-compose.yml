@@ -37,14 +37,25 @@ services:
       - '8989:8989'
     command: --url https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf --host 0.0.0.0
 
+  message-broker:
+    build:
+      context: ./rabbitmq
+    container_name: demo-broker
+    ports:
+      - "5672:5672"  # rabbitmq port
+      - "15672:15672"  # management plugin port
+
   simulator:
     container_name: simulator
-    build:
-      context: ./backend
+    image: mosteligible/sim-service:0.0.0
     ports:
       - '5000:5000'
     env_file:
       - simulator.env
+    depends_on:
+      - reverse-geocoding
+      - database
+      - routing-engine
     healthcheck:
       test: curl --fail http://localhost:5000/status || exit 1
       interval: 60s

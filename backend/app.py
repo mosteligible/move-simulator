@@ -3,11 +3,13 @@ from threading import Thread
 from config import AppConfig, DbConfig
 from flask import Flask, redirect, url_for
 from flask_login import LoginManager
+from flask_migrate import Migrate
 from map_routes.views import route_blueprint
 from message_queues.pubsub import DataPublisher
-from models import UserModel, db
+from models import db
+from users.models import UserModel
 from users.views import users_blueprint
-from utils import data_publisher, secret_key
+from utils import data_publisher, secret_key, update_configs
 
 app = Flask(AppConfig.app_name)
 app.secret_key = secret_key()
@@ -19,7 +21,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 )
 
 db.init_app(app)
+migrate = Migrate(app, db)
 login_manager.init_app(app)
+login_manager.login_view = "users.login"
 
 # Register blueprints
 app.register_blueprint(users_blueprint)
@@ -39,6 +43,7 @@ def index():
 
 @app.route("/status")
 def status():
+    update_configs()
     return {"status": 200}
 
 
