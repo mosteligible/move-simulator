@@ -12,11 +12,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
-      - name: Docker Login
-        run: echo ${{secrets.DOCKER_TOKEN}} | docker login -u ${{secrets.DOCKER_USER}} --password-stdin
       - name: Pull CI Image
         run: docker pull ${{secrets.DOCKER_USER}}/ci-image
       - name: Simulator tester
+        working-directory: ./backend
         run: docker run -t -v $(pwd):/tmp ${{secrets.DOCKER_USER}}/ci-image bash -c "pytest"
   build:
     runs-on: ubuntu-20.04
