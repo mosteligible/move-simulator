@@ -1,9 +1,9 @@
 from threading import Thread
 
-import config
 import utils
 from app import app
 from config import AppConfig
+from message_queues.pubsub import DataPublisher
 from users.models import UserModel
 
 
@@ -16,10 +16,11 @@ def initialize_consumers() -> None:
     continuously keep receiving data from device when data is sent.
     """
     with app.app_context():
-        users = UserModel.query.all()
+        UserModel.query.all()
 
 
 if __name__ == "__main__":
-    config_thread = Thread(target=utils.config_update_detector, daemon=True)
+    publisher = DataPublisher()
+    config_thread = Thread(target=utils.data_publisher, args=(publisher,), daemon=True)
     config_thread.start()
     app.run(host=AppConfig.host_ip, port=AppConfig.port, debug=False)

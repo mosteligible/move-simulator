@@ -1,16 +1,14 @@
 import re
-from threading import Thread
 from typing import List
 
 import requests
 from config import AppConfig
-from constants import DB_UPDATE_INTERVAL, UnitConv
+from constants import UnitConv
 from geoalchemy2.elements import WKBElement
 from message_queues.pubsub import DataSubscriber
-from models import db
 from shapely.geometry import Point
 
-from .map_helpers import CurrentStretch, RouteHelper, PositionUpdater
+from .map_helpers import CurrentStretch, PositionUpdater, RouteHelper
 from .models import Route
 
 
@@ -88,10 +86,14 @@ def distance_stream(subscriber: DataSubscriber, route: Route):
             f"next_coordinate: {next_coordinate}\n"
             f"destination: {current_stretch.destination}"
         )
-        if position_updates.update_distance_covered():
+        if position_updates.update_distance_covered(
+            route=route_helper, distance=distance_covered
+        ):
             position_updates.distance_travelled = 0.0
         else:
-            position_updates.distance_travelled += distance_covered * UnitConv.M_TO_KM.value
+            position_updates.distance_travelled += (
+                distance_covered * UnitConv.M_TO_KM.value
+            )
 
         yield f"data: {next_coordinate}\n\n"
         # if no polling from page, exit stream loop

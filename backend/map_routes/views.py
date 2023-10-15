@@ -7,7 +7,6 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     stream_with_context,
     url_for,
 )
@@ -116,8 +115,7 @@ def add_route():
 @route_blueprint.route("/stream/<route_id>")
 @login_required
 def stream(route_id: str):
-    user_id = current_user.id
-    subscriber = DataSubscriber(user_id=user_id, host="localhost")
+    subscriber = DataSubscriber(host="localhost", user_id="")
     route = Route.query.filter_by(id=route_id).first()
     return Response(
         stream_with_context(distance_stream(subscriber=subscriber, route=route)),
@@ -150,3 +148,4 @@ def running(route_id: str):
 @login_required
 def is_running():
     data = request.data
+    return data

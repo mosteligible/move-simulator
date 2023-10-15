@@ -88,9 +88,7 @@ class RouteHelper:
         self.start_position = self.lat_lon_from_postgis_point(route.start_position)
         self.end_position = self.lat_lon_from_postgis_point(route.end_position)
         self.last_position_index = route.last_position_index
-        self.last_position = route.route_coordinates["coordinates"][
-            self.last_position_index
-        ]
+        self.last_position = route.route_coordinates[self.last_position_index]
         self.id = route.id
         self.start_street_address = route.start_street_address
         self.start_city = route.start_city

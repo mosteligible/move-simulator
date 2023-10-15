@@ -35,7 +35,9 @@ services:
     image: routing-engine:latest
     ports:
       - '8989:8989'
-    command: --url https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf --host 0.0.0.0
+    volumes:
+      - ./geocode-data/:/tmp
+    command: -i /tmp/ontario-latest.osm.pbf --host 0.0.0.0
 
   message-broker:
     build:

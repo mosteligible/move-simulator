@@ -4,7 +4,6 @@ from hashlib import sha256
 from random import random
 
 import constants
-from flask import request
 from message_queues.pubsub import DataPublisher
 
 
@@ -17,7 +16,7 @@ def secret_key() -> str:
 def data_publisher(publisher: DataPublisher) -> None:
     iteration = 1
     while True:
-        message = f"topic {random()/8}"
+        message = f"{random()/8}"
         publisher.publish_data(message)
         iteration += 1
         time.sleep(2)
