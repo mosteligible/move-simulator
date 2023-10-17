@@ -2,12 +2,12 @@ from threading import Thread
 
 import utils
 from app import app
-from config import AppConfig
+import config
 from message_queues.pubsub import DataPublisher
 from users.models import UserModel
 
 
-def initialize_consumers() -> None:
+def initialize_consumer(user_id: str) -> None:
     """
     Initializes listeners for rabbitmq messages from devices.
 
@@ -23,4 +23,4 @@ if __name__ == "__main__":
     publisher = DataPublisher()
     config_thread = Thread(target=utils.data_publisher, args=(publisher,), daemon=True)
     config_thread.start()
-    app.run(host=AppConfig.host_ip, port=AppConfig.port, debug=False)
+    app.run(host=config.AppConfig.host_ip, port=config.AppConfig.port, debug=False)

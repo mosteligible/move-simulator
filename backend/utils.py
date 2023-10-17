@@ -26,6 +26,10 @@ def update_configs() -> None:
     return
 
 
+def thread_life_handler() -> None:
+    ...
+
+
 def config_update_detector() -> None:
     """Checks update to config file and applies updated values to application."""
     prev_config_file = ""

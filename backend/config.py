@@ -88,4 +88,4 @@ AppConfig = ApplicationConfig()
 DbConfig = DatabaseConfig()
 brokerconfig = ConsumerConfig()
 ROOT_DIR = Path(__file__).parent.absolute()
-CONSUMER_LIST = {}
+CONSUMERS = {}

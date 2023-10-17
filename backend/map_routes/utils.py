@@ -59,7 +59,6 @@ def distance_stream(subscriber: DataSubscriber, route: Route):
         return "data: path complete\n\n"
     route_helper = RouteHelper(route=route)
     start_coordinate = route_coordinates[route_helper.last_position_index]
-    print(f"Route first two: {route_coordinates[:2]}")
     current_stretch = CurrentStretch(
         origin=start_coordinate,
         destination=route_coordinates[route_helper.last_position_index + 1],
@@ -71,9 +70,6 @@ def distance_stream(subscriber: DataSubscriber, route: Route):
         distance_data_from_sensor = subscriber.receive_data()
         distance_covered = float(distance_data_from_sensor) * UnitConv.KM_TO_M.value
         current_stretch.distance_covered += distance_covered
-        print(
-            f"-- distance_covered: {distance_covered} current_stretch.distance: {current_stretch.distance}"
-        )
         current_stretch = update_current_stretch(
             current_stretch=current_stretch,
             distance_covered=distance_covered,
@@ -84,10 +80,11 @@ def distance_stream(subscriber: DataSubscriber, route: Route):
         print(
             f"origin: {current_stretch.origin}\n"
             f"next_coordinate: {next_coordinate}\n"
-            f"destination: {current_stretch.destination}"
+            f"destination: {current_stretch.destination}\n"
+            f"last_position_index: {route_helper.last_position_index}"
         )
         if position_updates.update_distance_covered(
-            route=route_helper, distance=distance_covered
+            route_helper=route_helper, distance=distance_covered
         ):
             position_updates.distance_travelled = 0.0
         else:
