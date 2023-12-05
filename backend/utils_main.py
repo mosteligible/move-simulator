@@ -2,9 +2,13 @@ import secrets
 import time
 from hashlib import sha256
 from random import random
+from typing import Dict
 
 import constants
 from message_queues.pubsub import DataPublisher
+from message_queues.rabbitmq import ConsumerLife
+
+CONSUMERS: Dict[str, ConsumerLife] = {}
 
 
 def secret_key() -> str:
@@ -24,6 +28,10 @@ def data_publisher(publisher: DataPublisher) -> None:
 
 def update_configs() -> None:
     return
+
+
+def thread_life_handler() -> None:
+    ...
 
 
 def config_update_detector() -> None:

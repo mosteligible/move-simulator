@@ -1,10 +1,13 @@
+import time
+from threading import Thread
+
 import pika
 from config import brokerconfig
 
 from .pubsub import DataPublisher
 
 
-class Consumer:
+class Consumer(Thread):
     def __init__(self, user_id: str) -> None:
         self.config = brokerconfig
         self.user_id = user_id
@@ -32,3 +35,13 @@ class Consumer:
         body = f"{self.user_id} {body}"
         self.publisher.publish_data(data=body)
         ch.basic_ack(delivery_tag=method.delivery_tag)
+
+
+class ConsumerLife:
+    def __init__(self, consumer: Consumer) -> None:
+        self.consumer: Consumer = consumer
+        self.is_alive: bool = True
+        self.last_updated: int = time.time()
+
+    def update_checkpoint(self) -> None:
+        self.last_updated = time.time()
