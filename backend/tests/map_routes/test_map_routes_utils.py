@@ -1,6 +1,6 @@
 from typing import Dict
 
-from map_routes import utils
+from map_routes import map_utils
 from map_routes.map_helpers import CurrentStretch
 from shapely.geometry.point import Point
 
@@ -53,7 +53,7 @@ def test_postgis_point() -> None:
     coordinates = [[1, 2], [3, 4], [-5, 6]]
     expected_output = [Point([1, 2]), Point([3, 4]), Point([-5, 6])]
     for index, input in enumerate(coordinates):
-        output = utils.postgis_point(input)
+        output = map_utils.postgis_point(input)
         assert isinstance(output, Point)
         assert output == expected_output[index]
 
@@ -64,7 +64,7 @@ def test_update_current_stretch() -> None:
     current_stretch = CurrentStretch(
         origin=origin_coordinates, destination=destination_coordinates
     )
-    assert current_stretch == utils.update_current_stretch(
+    assert current_stretch == map_utils.update_current_stretch(
         current_stretch,
         current_stretch.distance - 1,  # distance covered is less than stretch length
         MockRouteHelper(),
@@ -73,13 +73,13 @@ def test_update_current_stretch() -> None:
     next_stretch = CurrentStretch(
         origin=ROUTE_COORDINATES[1], destination=ROUTE_COORDINATES[2]
     )
-    assert next_stretch == utils.update_current_stretch(
+    assert next_stretch == map_utils.update_current_stretch(
         current_stretch,
         current_stretch.distance + 1,  # distance covered is more than stretch length
         MockRouteHelper(),
         ROUTE_COORDINATES,
     )
-    assert next_stretch == utils.update_current_stretch(
+    assert next_stretch == map_utils.update_current_stretch(
         current_stretch,
         current_stretch.distance,  # when distance covered is equal to stretch length
         MockRouteHelper(),
