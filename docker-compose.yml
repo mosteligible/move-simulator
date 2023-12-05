@@ -20,7 +20,6 @@ services:
   reverse-geocoding:
     container_name: reverse-geocode
     image: mediagis/nominatim:4.0
-    restart: always
     ports:
         - "8080:8080"
     env_file:

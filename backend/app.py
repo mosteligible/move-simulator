@@ -9,7 +9,7 @@ from message_queues.pubsub import DataPublisher
 from models import db
 from users.models import UserModel
 from users.views import users_blueprint
-from utils import data_publisher, secret_key, update_configs
+from utils_main import data_publisher, secret_key, update_configs
 
 app = Flask(AppConfig.app_name)
 app.secret_key = secret_key()

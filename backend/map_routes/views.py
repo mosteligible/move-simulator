@@ -1,5 +1,6 @@
 import uuid
 
+import utils_main
 from flask import (
     Blueprint,
     Response,
@@ -16,8 +17,12 @@ from models import db
 
 from .forms import RouteAddForm
 from .map_helpers import Position, RouteHelper
+from .map_utils import (
+    distance_stream,
+    get_coordinates_from_address,
+    get_route_coordinates,
+)
 from .models import Route
-from .utils import distance_stream, get_coordinates_from_address, get_route_coordinates
 
 route_blueprint = Blueprint(
     name="map_routes",
@@ -115,7 +120,7 @@ def add_route():
 @route_blueprint.route("/stream/<route_id>")
 @login_required
 def stream(route_id: str):
-    subscriber = DataSubscriber(host="localhost", user_id="")
+    subscriber = DataSubscriber(host="localhost", user_id=current_user.id)
     route = Route.query.filter_by(id=route_id).first()
     return Response(
         stream_with_context(distance_stream(subscriber=subscriber, route=route)),
@@ -147,5 +152,7 @@ def running(route_id: str):
 @route_blueprint.route("/is_running", methods=["POST"])
 @login_required
 def is_running():
-    data = request.data
-    return data
+    user_id = current_user.id
+    consumer_holder = utils_main.CONSUMERS.get(user_id)
+    consumer_holder.update_checkpoint()
+    return {"received": "ok"}

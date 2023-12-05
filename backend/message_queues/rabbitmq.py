@@ -1,6 +1,8 @@
+import time
+from threading import Thread
+
 import pika
 from config import brokerconfig
-from threading import Thread
 
 from .pubsub import DataPublisher
 
@@ -39,3 +41,7 @@ class ConsumerLife:
     def __init__(self, consumer: Consumer) -> None:
         self.consumer: Consumer = consumer
         self.is_alive: bool = True
+        self.last_updated: int = time.time()
+
+    def update_checkpoint(self) -> None:
+        self.last_updated = time.time()

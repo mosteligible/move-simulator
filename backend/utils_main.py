@@ -2,9 +2,13 @@ import secrets
 import time
 from hashlib import sha256
 from random import random
+from typing import Dict
 
 import constants
 from message_queues.pubsub import DataPublisher
+from message_queues.rabbitmq import ConsumerLife
+
+CONSUMERS: Dict[str, ConsumerLife] = {}
 
 
 def secret_key() -> str:
